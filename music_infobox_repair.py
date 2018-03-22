@@ -139,7 +139,7 @@ def process_page(text,dry_run):
         or template.name.matches("album infobox soundtrack") or template.name.matches("dvd infobox")
         or template.name.matches("infobox dvd") or template.name.matches("infobox ep")):
             try:
-                template.name = "subst:Infobox Album"
+                template.name = "subst:" + template.name
                 content_changed = True#do_cleanup_columns_list(template)
                 print("params")
             except ValueError:
