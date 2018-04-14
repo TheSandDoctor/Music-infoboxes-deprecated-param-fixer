@@ -1,5 +1,5 @@
 #!/usr/bin/env python3.6
-import mwclient, configparser, mwparserfromhell, argparse, re, pathlib
+import mwclient, configparser, mwparserfromhell, argparse, re, pathlib,copy
 from time import sleep
 
 
@@ -138,25 +138,30 @@ def get_valid_filename(s):
 
 
 def figure_type(template):
-    if template.name.matches("infobox album"):
+    temp_template = copy.deepcopy(template)
+   # temp_template.name = temp_template.name.lower()
+    #temp_template = template
+    temp_template.name = temp_template.name.lower()
+    #template.name = template.name.lower()
+    if temp_template.name.matches("infobox album"):
         return "infobox album"
-    elif template.name.matches("album infobox"):
+    elif temp_template.name.matches("album infobox"):
         return "album infobox"
-    elif template.name.matches("album infobox soundtrack"):
+    elif temp_template.name.matches("album infobox soundtrack"):
         return "album infobox soundtrack"
-    elif template.name.matches("dvd infobox"):
+    elif temp_template.name.matches("dvd infobox"):
         return "dvd infobox"
-    elif template.name.matches("infobox dvd"):
+    elif temp_template.name.matches("infobox dvd"):
         return "infobox dvd"
-    elif template.name.matches("infobox ep"):
+    elif temp_template.name.matches("infobox ep"):
         return "infobox ep"
-    elif template.name.matches("extra chronology"):
+    elif temp_template.name.matches("extra chronology"):
         return "extra chronology"
-    elif template.name.matches("extra album cover"):
+    elif temp_template.name.matches("extra album cover"):
         return "extra album cover"
-    elif template.name.matches("extra track listing"):
+    elif temp_template.name.matches("extra track listing"):
         return "extra track listing"
-    elif template.name.matches("extra tracklisting"):
+    elif temp_template.name.matches("extra tracklisting"):
         return "extra tracklisting"
     else:
         return False
@@ -249,7 +254,7 @@ def category_run(cat_name, utils, site, offset, limited_run, pages_to_run, cat_t
 
 def main():
     dry_run = False
-    pages_to_run = 5
+    pages_to_run = 10
     offset = 0
     category = "Music infoboxes with deprecated parameters"  # "Pages using div col with deprecated parameters"
     category_to_avoid = "Music infoboxes with Module:String errors"
@@ -280,11 +285,12 @@ def main():
         raise ValueError("Login failed.")
     utils = [config, site, dry_run]
     try:
-        category_run(category,utils,site,offset,limited_run,pages_to_run,category_to_avoid)
-     #   single_run("Bad Intentions (album)", utils, site, category_to_avoid)
+     #   category_run(category,utils,site,offset,limited_run,pages_to_run,category_to_avoid)
+        single_run("User:Arbor to SJ/Stages (Nick Cannon album)", utils, site, category_to_avoid)
     except ValueError as e:
 
         print("\n\n" + str(e))
+
 
 if __name__ == "__main__":
     main()
