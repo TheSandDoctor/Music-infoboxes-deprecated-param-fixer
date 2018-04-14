@@ -1,14 +1,17 @@
 #!/usr/bin/env python3.6
-import mwclient, configparser, mwparserfromhell, argparse,re, pathlib
+import mwclient, configparser, mwparserfromhell, argparse, re, pathlib
 from time import sleep
 
+
 def call_home(site):
-    #page = site.Pages['User:' + config.get('enwiki','username') + "/status"]
+    # page = site.Pages['User:' + config.get('enwiki','username') + "/status"]
     page = site.Pages['User:DeprecatedFixerBot/status']
     text = page.text()
     if "false" in text.lower():
         return False
     return True
+
+
 def allow_bots(text, user):
     user = user.lower().strip()
     text = mwparserfromhell.parse(text)
@@ -30,6 +33,8 @@ def allow_bots(text, user):
                 if bot in (user, 'all'):
                     return False
     return True
+
+
 def save_edit(page, utils, text):
     config = utils[0]
 
@@ -37,28 +42,30 @@ def save_edit(page, utils, text):
     dry_run = utils[2]
     original_text = text
     if not dry_run:
-        if not allow_bots(original_text, config.get('enwikidep','username')):
+        if not allow_bots(original_text, config.get('enwikidep', 'username')):
             print("Page editing blocked as template preventing edit is present.")
             return
-    #print("{}".format(dry_run))
+    # print("{}".format(dry_run))
     code = mwparserfromhell.parse(text)
     for template in code.filter_templates():
         if template.name.matches("nobots") or template.name.matches("Wikipedia:Exclusion compliant"):
             if template.has("allow"):
                 if "DeprecatedFixerBot" in template.get("allow").value:
-                    break # can edit
+                    break  # can edit
             print("\n\nPage editing blocked as template preventing edit is present.\n\n")
             return
-    if not call_home(site):#config):
+    if not call_home(site):  # config):
         raise ValueError("Kill switch on-wiki is false. Terminating program.")
     time = 0
-    edit_summary = """'Removed deprecated parameter(s) from [[Template:Infobox album]]/[[Template:Extra chronology]] / [[Template:Extra album cover]] / [[Template:Extra track listing]] using [[User:""" + config.get('enwikidep','username') + "| " + config.get('enwikidep','username') + """]]. Questions? [[User talk:TheSandDoctor|msg TSD!]] (please mention that this is task #3! [[Wikipedia:Bots/Requests for approval/DeprecatedFixerBot 3|BRFA in-progress]])"""
+    edit_summary = """Removed deprecated parameter(s) from [[Template:Infobox album]]/[[Template:Extra chronology]]/[[Template:Extra album cover]]/[[Template:Extra track listing]] using [[User:""" + config.get(
+        'enwikidep', 'username') + "| " + config.get('enwikidep',
+                                                     'username') + """]]. Questions? [[User talk:TheSandDoctor|msg TSD!]] (please mention that this is task #3! [[Wikipedia:Bots/Requests for approval/DeprecatedFixerBot 3|BRFA in-progress]])"""
     while True:
-         #text = page.edit()
+        # text = page.edit()
         if time == 1:
             text = site.Pages[page.page_title].text()
         try:
-            content_changed, text = process_page(original_text,dry_run)
+            content_changed, text = process_page(original_text, dry_run)
         except ValueError as e:
             """
             To get here, there must have been an issue figuring out the
@@ -74,7 +81,7 @@ def save_edit(page, utils, text):
             pathlib.Path('./errors').mkdir(parents=False, exist_ok=True)
             title = get_valid_filename(page.page_title)
             text_file = open("./errors/err " + title + ".txt", "w")
-            text_file.write("Error present: " +  str(e) + "\n\n\n\n\n" + text)
+            text_file.write("Error present: " + str(e) + "\n\n\n\n\n" + text)
             text_file.close()
             text_file = open("./errors/error_list.txt", "a+")
             text_file.write(page.page_title + "\n")
@@ -86,12 +93,12 @@ def save_edit(page, utils, text):
         try:
             if dry_run:
                 print("Dry run")
-                #Write out the initial input
+                # Write out the initial input
                 title = get_valid_filename(page.page_title)
                 text_file = open("./tests/in " + title + ".txt", "w")
                 text_file.write(original_text)
                 text_file.close()
-                #Write out the output
+                # Write out the output
                 if content_changed:
                     title = get_valid_filename(page.page_title)
                     text_file = open("./tests/out " + title + ".txt", "w")
@@ -101,19 +108,21 @@ def save_edit(page, utils, text):
                     print("Content not changed, don't print output")
                 break
             else:
-                print("Would have saved here")
-                break
-                #TODO: Enable
-            #    page.save(text, summary=edit_summary, bot=True, minor=True)
-            #    print("Saved page")
-        except [[EditError]]:
+                 #   print("Would have saved here")
+                 #   break
+                # TODO: Enable
+                page.save(text, summary=edit_summary, bot=True, minor=True)
+                print("Saved page")
+        except mwclient.ProtectedPageError:
+            print('Could not edit ' + page.page_title + ' due to protection')
+        except mwclient.EditError:
             print("Error")
             time = 1
-            sleep(5)   # sleep for 5 seconds before trying again
+            sleep(5)  # sleep for 5 seconds before trying again
             continue
-        except [[ProtectedPageError]]:
-            print('Could not edit ' + page.page_title + ' due to protection')
         break
+
+
 def get_valid_filename(s):
     """
     Turns a regular string into a valid (sanatized) string that is safe for use
@@ -123,66 +132,110 @@ def get_valid_filename(s):
     @param s String to convert to be file safe
     @return File safe string
     """
-    assert(s is not "" or s is not None)
+    assert (s is not "" or s is not None)
     s = str(s).strip().replace(' ', '_')
     return re.sub(r'(?u)[^-\w.]', '', s)
 
-def process_page(text,dry_run):
+
+def figure_type(template):
+    if template.name.matches("infobox album"):
+        return "infobox album"
+    elif template.name.matches("album infobox"):
+        return "album infobox"
+    elif template.name.matches("album infobox soundtrack"):
+        return "album infobox soundtrack"
+    elif template.name.matches("dvd infobox"):
+        return "dvd infobox"
+    elif template.name.matches("infobox dvd"):
+        return "infobox dvd"
+    elif template.name.matches("infobox ep"):
+        return "infobox ep"
+    elif template.name.matches("extra chronology"):
+        return "extra chronology"
+    elif template.name.matches("extra album cover"):
+        return "extra album cover"
+    elif template.name.matches("extra track listing"):
+        return "extra track listing"
+    elif template.name.matches("extra tracklisting"):
+        return "extra tracklisting"
+    else:
+        return False
+
+
+def process_page(text, dry_run):
     wikicode = mwparserfromhell.parse(text)
     templates = wikicode.filter_templates()
     content_changed = False
 
-
     code = mwparserfromhell.parse(text)
     for template in code.filter_templates():
-        if (template.name.matches("infobox album") or template.name.matches("album infobox")
-        or template.name.matches("album infobox soundtrack") or template.name.matches("dvd infobox")
-        or template.name.matches("infobox dvd") or template.name.matches("infobox ep")):
+        # if (template.name.matches("infobox album") or template.name.matches("album infobox")
+        # or template.name.matches("album infobox soundtrack") or template.name.matches("dvd infobox")
+        # or template.name.matches("infobox dvd") or template.name.matches("infobox ep")):
+        type = figure_type(template)
+        if (type):
             try:
-                template.name = "subst:" + template.name
-                content_changed = True#do_cleanup_columns_list(template)
-                print("params")
+                # name = template.name
+                # template.name = "d" + temp
+                template.name = "subst:" + type + "|"
+                # template.name = "subst:" + template.name
+                content_changed = True  # do_cleanup_columns_list(template)
+                print("params " + str(type))
             except ValueError:
                 raise
 
 
         elif template.name.matches("extra chronology"):
             try:
-                template.name = "subst:Extra chronology"
-                content_changed = True
+                pass
+           #     template.name = "subst:Extra chronology"
+            #    content_changed = True
             except ValueError:
                 raise
         elif template.name.matches("extra album cover"):
             try:
-                template.name = "subst:Extra album cover"
-                content_changed = True
+                pass
+            #    template.name = "subst:Extra album cover"
+            #    content_changed = True
             except ValueError:
                 raise
         elif template.name.matches("extra track listing") or template.name.matches("extra tracklisting"):
             try:
-                template.name = "subst:" + template.name
-                content_changed = True
+                pass
+            #    template.name = "subst:" + template.name
+            #    content_changed = True
             except ValueError:
                 raise
-    return [content_changed, str(code)] # get back text to save
+    return [content_changed, str(code)]  # get back text to save
 
-def single_run(title, utils, site):
+
+def single_run(title, utils, site,cat_to_avoid):
     if title is None or title is "":
         raise ValueError("Category name cannot be empty!")
     if utils is None:
         raise ValueError("Utils cannot be empty!")
     if site is None:
         raise ValueError("Site cannot be empty!")
+    avoid = []
+    if cat_to_avoid is not None:
+        for page in site.Categories[cat_to_avoid]:
+            avoid.append(page.name)
     print(title)
-    page = site.Pages[title]#'3 (Bo Bice album)']
+  #  print(avoid)
+    if title in avoid:
+        print("Page should be avoided!")
+        exit(0)
+    page = site.Pages[title]  # '3 (Bo Bice album)']
     text = page.text()
 
     try:
-        #utils = [config,site,dry_run]
-        save_edit(page, utils, text)#config, api, site, text, dry_run)#, config)
+        # utils = [config,site,dry_run]
+        save_edit(page, utils, text)  # config, api, site, text, dry_run)#, config)
     except ValueError as err:
         print(err)
-def category_run(cat_name, utils, site, offset,limited_run,pages_to_run):
+
+
+def category_run(cat_name, utils, site, offset, limited_run, pages_to_run, cat_to_avoid):
     if cat_name is None or cat_name is "":
         raise ValueError("Category name cannot be empty!")
     if utils is None:
@@ -197,7 +250,14 @@ def category_run(cat_name, utils, site, offset,limited_run,pages_to_run):
         raise ValueError("""Seriously? How are we supposed to run pages in a
         limited test if none are specified?""")
     counter = 0
+    pages_to_avoid = []
+    for page in site.Categories[cat_to_avoid]:
+        pages_to_avoid.append(page.name)
     for page in site.Categories[cat_name]:
+        if page.name in pages_to_avoid:
+            print("Page in pages to avoid! CONTINUING!")
+            continue
+        # to get this far, page isn't in category to avoid
         if offset > 0:
             offset -= 1
             print("Skipped due to offset config")
@@ -208,47 +268,50 @@ def category_run(cat_name, utils, site, offset,limited_run,pages_to_run):
                 counter += 1
                 text = page.text()
                 try:
-                    save_edit(page, utils, text)#config, api, site, text, dry_run)#, config)
+                    save_edit(page, utils, text)  # config, api, site, text, dry_run)#, config)
                 except ValueError as err:
                     print(err)
             else:
                 return  # run out of pages in limited run
+
+
 def main():
     dry_run = False
-    pages_to_run = 10
+    pages_to_run = 5
     offset = 0
-    category = "Music infoboxes with deprecated parameters"#"Pages using div col with deprecated parameters"
+    category = "Music infoboxes with deprecated parameters"  # "Pages using div col with deprecated parameters"
+    category_to_avoid = "Music infoboxes with Module:String errors"
     limited_run = True
 
     parser = argparse.ArgumentParser(prog='DeprecatedFixerBot Music infobox fixer', description='''Adds "subst:" to the beginning of all
     {{infobox album}}, {{extra chronology}}, {{extra album cover}}, and {{extra track listing}} templates. This results in the template substitution trick which replaces deprecated parameters with their correct values to occur.''')
     parser.add_argument("-dr", "--dryrun", help="perform a dry run (don't actually edit)",
-                    action="store_true")
-    #parser.add_argument("-arch","--archive", help="actively archive Tweet links (even if still live links)",
+                        action="store_true")
+    # parser.add_argument("-arch","--archive", help="actively archive Tweet links (even if still live links)",
     #                action="store_true")
     args = parser.parse_args()
     if args.dryrun:
         dry_run = True
         print("Dry run")
 
-    site = mwclient.Site(('https','en.wikipedia.org'), '/w/')
+    site = mwclient.Site(('https', 'en.wikipedia.org'), '/w/')
     if dry_run:
         pathlib.Path('./tests').mkdir(parents=False, exist_ok=True)
     config = configparser.RawConfigParser()
     config.read('credentials.txt')
     try:
-        pass
-        #site.login(config.get('enwikidep','username'), config.get('enwikidep', 'password'))
-    except errors.LoginError as e:
-        #print(e[1]['reason'])
+        # pass
+        site.login(config.get('enwikidep', 'username'), config.get('enwikidep', 'password'))
+    except mwclient.LoginError as e:
+        # print(e[1]['reason'])
         print(e)
         raise ValueError("Login failed.")
-
-    utils = [config,site,dry_run]
+    utils = [config, site, dry_run]
     try:
-        #single_run('User:DeprecatedFixerBot/sandbox', utils, site)
-        category_run(category, utils, site, offset,limited_run,pages_to_run)
+        category_run(category,utils,site,offset,limited_run,pages_to_run,category_to_avoid)
+     #   single_run("Bad Intentions (album)", utils, site, category_to_avoid)
     except ValueError as e:
+
         print("\n\n" + str(e))
 
 if __name__ == "__main__":
