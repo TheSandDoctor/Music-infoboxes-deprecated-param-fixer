@@ -65,7 +65,7 @@ def save_edit(page, utils, text):
         if time == 1:
             text = site.Pages[page.page_title].text()
         try:
-            content_changed, text = process_page(original_text, dry_run)
+            content_changed, text = process_page(original_text)
         except ValueError as e:
             """
             To get here, there must have been an issue figuring out the
@@ -162,48 +162,20 @@ def figure_type(template):
         return False
 
 
-def process_page(text, dry_run):
-    wikicode = mwparserfromhell.parse(text)
-    templates = wikicode.filter_templates()
+def process_page(text):
     content_changed = False
 
     code = mwparserfromhell.parse(text)
     for template in code.filter_templates():
-        # if (template.name.matches("infobox album") or template.name.matches("album infobox")
-        # or template.name.matches("album infobox soundtrack") or template.name.matches("dvd infobox")
-        # or template.name.matches("infobox dvd") or template.name.matches("infobox ep")):
-        type = figure_type(template)
-        if (type):
+        type_of_template = figure_type(template)
+        if type_of_template:
             try:
                 # name = template.name
                 # template.name = "d" + temp
-                template.name = "subst:" + type + "|"
+                template.name = "subst:" + type_of_template + "|"
                 # template.name = "subst:" + template.name
                 content_changed = True  # do_cleanup_columns_list(template)
-                print("params " + str(type))
-            except ValueError:
-                raise
-
-
-        elif template.name.matches("extra chronology"):
-            try:
-                pass
-           #     template.name = "subst:Extra chronology"
-            #    content_changed = True
-            except ValueError:
-                raise
-        elif template.name.matches("extra album cover"):
-            try:
-                pass
-            #    template.name = "subst:Extra album cover"
-            #    content_changed = True
-            except ValueError:
-                raise
-        elif template.name.matches("extra track listing") or template.name.matches("extra tracklisting"):
-            try:
-                pass
-            #    template.name = "subst:" + template.name
-            #    content_changed = True
+                print("params " + str(type_of_template))
             except ValueError:
                 raise
     return [content_changed, str(code)]  # get back text to save
