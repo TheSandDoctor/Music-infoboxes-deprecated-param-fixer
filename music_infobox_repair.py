@@ -175,6 +175,16 @@ def process_page(text):
         type_of_template = figure_type(template)
         if type_of_template:
             try:
+                #t = copy.deepcopy(template)
+                #parat = str(t.params).lower()
+                #t = mwparserfromhell.nodes.template.Template(str(t),parat)
+                #print(t.params)
+                if template.has("released"):
+                    #print("Y")
+                    #print(str(template.get('released').value).strip())
+                    if not re.match(r'\d\d\d+',str(template.get('released').value).strip()):
+                        print("Didn't happen")
+                        continue
                 # name = template.name
                 # template.name = "d" + temp
                 template.name = "subst:" + type_of_template + "|"
@@ -194,9 +204,9 @@ def single_run(title, utils, site,cat_to_avoid):
     if site is None:
         raise ValueError("Site cannot be empty!")
     avoid = []
-    if cat_to_avoid is not None:
-        for page in site.Categories[cat_to_avoid]:
-            avoid.append(page.name)
+#    if cat_to_avoid is not None:
+#        for page in site.Categories[cat_to_avoid]:
+#            avoid.append(page.name)
     print(title)
   #  print(avoid)
     if title in avoid:
@@ -286,7 +296,7 @@ def main():
     utils = [config, site, dry_run]
     try:
      #   category_run(category,utils,site,offset,limited_run,pages_to_run,category_to_avoid)
-        single_run("User:Arbor to SJ/Stages (Nick Cannon album)", utils, site, category_to_avoid)
+        single_run("User:DeprecatedFixerBot/sandbox/music infoboxes", utils, site, category_to_avoid)
     except ValueError as e:
 
         print("\n\n" + str(e))
@@ -294,3 +304,26 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+def query():
+    result = site.api('query',format='json',list='recentchanges',rcuser='DeprecatedFixerBot',rcprop='title|timestamp|comment',rclimit='max',rctype='categorize')
+    res2 = result['query']['recentchanges']
+
+    t_f = open("pi.txt",'w+')
+    check = re.compile(r'(\[\[.+\]\])')
+    for i in res2:
+        title = list(i.items())[2][1]
+        comment = list(i.items())[4][1]
+        if title == "Category:Music infoboxes with Module:String errors":
+            print("YOYO")
+            #t_f = open("pi.txt",'a')
+            cmt = re.match(check,comment)
+            t_f.write(str(title) + " " + str(cmt.group(1)) + "\n")
+
+    #    tit.append(title)
+        #print(title)
+    t_f.close()
+    print(list(res2[2].items()))
+    text_file = open("result.txt", "w")
+    text_file.write(str(result['query']))
+    text_file.close()
