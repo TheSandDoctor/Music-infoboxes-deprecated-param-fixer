@@ -1,6 +1,6 @@
 #!/usr/bin/env python3.6
 import mwclient, configparser, mwparserfromhell, argparse, re, pathlib,copy
-import example
+import music_infobox
 from time import sleep
 
 def call_home(site):
@@ -289,11 +289,13 @@ def single_run(title, utils, site,cat_to_avoid):
         raise ValueError("Site cannot be empty!")
     avoid = []
     if cat_to_avoid is not None:
-        for page in site.Categories[cat_to_avoid]:
-            avoid.append(page.name)
+        avoid = music_infobox.gen_cat_to_avoid(site,cat_to_avoid)
+        #for page in site.Categories[cat_to_avoid]:
+        #    avoid.append(page.name)
     print(title)
   #  print(avoid)
-    if title in avoid:
+    if music_infobox.inlist(title,pages_to_avoid):
+    #if title in avoid:
         print("Page should be avoided!")
         exit(0)
     page = site.Pages[title]  # '3 (Bo Bice album)']
@@ -322,10 +324,12 @@ def category_run(cat_name, utils, site, offset, limited_run, pages_to_run, cat_t
         limited test if none are specified?""")
     counter = 0
     pages_to_avoid = []
-    for page in site.Categories[cat_to_avoid]:
-        pages_to_avoid.append(page.name)
+    #for page in site.Categories[cat_to_avoid]:
+    #    pages_to_avoid.append(page.name)
+    pages_to_avoid = music_infobox.gen_cat_to_avoid(site,cat_to_avoid)
     for page in site.Categories[cat_name]:
-        if page.name in pages_to_avoid:
+        if music_infobox.inlist(page.name,pages_to_avoid):
+        #if page.name in pages_to_avoid:
             print("Page in pages to avoid! CONTINUING!")
             continue
         # to get this far, page isn't in category to avoid

@@ -93,6 +93,13 @@ bool pageInList(std::string page_name,py::list list) {
     }
     return false;
 }
+py::list gen_cat_to_avoid(py::object site,py::str cat) {
+    py::list list; //= new py::list();
+    for(auto item : site.attr("Categories").attr("__getitem__")(cat)) {
+        list.append(item);
+    }
+    return list;
+}
 
 string template_figure_type(string temp) {
     if(equal_case_insensitive(temp,"infobox album"))
@@ -269,7 +276,7 @@ bool revert(string page_name,py::object site) {
 
 
 PYBIND11_MODULE(music_infobox, m) {
-    m.doc() = "pybind11 example plugin"; // optional module docstring
+   // m.doc() = "pybind11 example plugin"; // optional module docstring
 
     m.def("print_dict",&print_dict);
     m.def("inlist",&pageInList);
@@ -279,10 +286,11 @@ PYBIND11_MODULE(music_infobox, m) {
     m.def("call_home",&call_home);
     m.def("revert",&revert);
     m.def("leftMess",&leftMess);
-    
-    m.def("makedir",&Helpers::makeDir);
-    m.def("create",&Helpers::createWriteFile2);
-    m.def("validf",&Helpers::get_valid_filename);
+    //m.def("l",&gen_cat_to_avoid);
+    m.def("gen_cat_to_avoid",&gen_cat_to_avoid);
+    //m.def("makedir",&Helpers::makeDir);
+    //m.def("create",&Helpers::createWriteFile2);
+   // m.def("validf",&Helpers::get_valid_filename);
     
     py::class_<Pet>(m, "Pet")
     .def(py::init<const std::string &>())

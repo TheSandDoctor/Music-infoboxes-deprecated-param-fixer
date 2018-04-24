@@ -90,3 +90,4 @@ bool bContent_changed = false;
 bool getContentChanged();
 
 bool revert(string page_name,py::object site);
+//py::list gen_cat_to_avoid(py::object site);
