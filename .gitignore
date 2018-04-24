@@ -1,5 +1,4 @@
 Makefile
-*.txt
 *.so
 *.cmake
 credentials.txt
