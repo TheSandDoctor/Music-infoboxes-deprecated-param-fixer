@@ -4,3 +4,7 @@ Makefile
 credentials.txt
 CMakeFiles/
 CMakeCache.txt
+.idea/
+.DS_Store
+pi.txt
+result.txt
