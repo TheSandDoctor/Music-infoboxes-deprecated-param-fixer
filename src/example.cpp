@@ -86,7 +86,8 @@ void sortArray(char *string[], const int size)
 bool pageInList(std::string page_name,py::list list) {
    // sortArray(py::str(list))
     for(auto item:list) {
-        if(page_name.find(py::str(item)) != string::npos) {
+        if(page_name.compare(py::str(item)) == 0){//if(page_name.find(py::str(item)) != string::npos) {
+            //cout << string(py::str(item));
             return true;
         }
     }
@@ -267,7 +268,7 @@ bool revert(string page_name,py::object site) {
 }
 
 
-PYBIND11_MODULE(example, m) {
+PYBIND11_MODULE(music_infobox, m) {
     m.doc() = "pybind11 example plugin"; // optional module docstring
 
     m.def("print_dict",&print_dict);
