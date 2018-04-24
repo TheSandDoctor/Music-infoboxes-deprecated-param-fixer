@@ -1,7 +1,7 @@
 #!/usr/bin/env python3.6
 import mwclient, configparser, mwparserfromhell, argparse, re, pathlib,copy
+import example
 from time import sleep
-
 
 def call_home(site):
     # page = site.Pages['User:' + config.get('enwiki','username') + "/status"]
@@ -113,6 +113,8 @@ def save_edit(page, utils, text):
                 # TODO: Enable
                 page.save(text, summary=edit_summary, bot=True, minor=True)
                 print("Saved page")
+                if example.leftMess(site,page.page_title):
+                    print("Introduced error, self reverted")
         except mwclient.ProtectedPageError:
             print('Could not edit ' + page.page_title + ' due to protection')
         except mwclient.EditError:
@@ -179,11 +181,93 @@ def process_page(text):
                 #parat = str(t.params).lower()
                 #t = mwparserfromhell.nodes.template.Template(str(t),parat)
                 #print(t.params)
+                if type_of_template == "extra chronology":
+                    wikilink1 = re.compile(r"(\[\[(?:(?:\d\d?\/\d\d?\/\d\d\d+)|(?:\d\d?\d+\/\d\d?\/\d\d?)|(?:(?:(?:\d\d+\s*)?(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d?,?\s*\d\d\d+)|(\d\d+-\d\d-\d\d+)))")
+                    datetempreg = re.compile(r"((?:\d\d?\/\d\d?\/\d\d\d+)|(?:\d\d?\d+\/\d\d?\/\d\d?)|(?:(?:(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d?,?\s*\d\d\d+))")
+                    datetempreg2 = re.compile(r"((?:(?:\d\d+\s*)?(?:(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d\d+)|(\d\d+-\d\d-\d\d+))")
+                    datetempreg3 = re.compile(r"\d\d\d+")
+                    if template.has("this album"):
+                        #wikilink1 = re.compile(r"(\[\[(?:(?:\d\d?\/\d\d?\/\d\d\d+)|(?:\d\d?\d+\/\d\d?\/\d\d?)|(?:(?:(?:\d\d+\s*)?(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d?,?\s*\d\d\d+)|(\d\d+-\d\d-\d\d+)))")
+
+                        print("Has this album")
+                        re1 = datetempreg.search(str(template.get('this album').value).strip(),re.IGNORECASE)
+                        re2 = datetempreg2.search(str(template.get('this album').value).strip(),re.IGNORECASE)
+                        #re1 = re.search(r"((?:\d\d?\/\d\d?\/\d\d\d+)|(?:\d\d?\d+\/\d\d?\/\d\d?)|(?:(?:(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d?,?\s*\d\d\d+))",str(template.get('this album').value).strip(),re.IGNORECASE)
+                        #re2 = re.search(r"((?:(?:\d\d+\s*)?(?:(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d\d+)|(\d\d+-\d\d-\d\d+))",str(template.get('this album').value).strip(),re.IGNORECASE)
+                        #template.get("this album","title")
+                        template.get("this album").name = "title"
+                        if not re1:
+                            if not re2:
+                                print("Didn't happen extra chronology")
+                                continue
+                        t = wikilink1.search(str(template.get('title').value).strip(),re.IGNORECASE)
+                        #t = re.search(r"(\[\[(?:(?:\d\d?\/\d\d?\/\d\d\d+)|(?:\d\d?\d+\/\d\d?\/\d\d?)|(?:(?:(?:\d\d+\s*)?(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d?,?\s*\d\d\d+)|(\d\d+-\d\d-\d\d+)))",str(template.get('title').value).strip(),re.IGNORECASE)
+                        #t1 = re.search(r"(\[\[(?:(?:\d\d+\s*)?(?:(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d\d+)|(\d\d+-\d\d-\d\d+))",str(template.get('title').value).strip(),re.IGNORECASE)
+                        if not t:
+                            print("Not t")
+                            template.get("title").value = re.sub(r"((?:\d\d?\/\d\d?\/\d\d\d+)|(?:\d\d?\d+\/\d\d?\/\d\d?)|(?:(?:(?:\d\d+\s*)?(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d?,?\s*\d\d\d+)|(\d\d+-\d\d-\d\d+))","",str(template.get('title').value))
+                    #    if not t1:
+                    #        print("Not t1")
+                    #        template.get("title").value = re.sub(r"((?:(?:\d\d+\s*)?(?:(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d\d+)|(\d\d+-\d\d-\d\d+))","",str(template.get('title').value))
+                            #FIXME: Never being called?
+                        if re1:
+                            template.add("year",re1.group(1))
+                        if re2:
+                            template.add("year",re2.group(1))
+                    if template.has("last album"):
+                        print("Has last album")
+                        re1 = datetempreg.search(str(template.get('last album').value).strip(),re.IGNORECASE)
+                        re2 = datetempreg2.search(str(template.get('last album').value).strip(),re.IGNORECASE)
+                        re3 = datetempreg3.search(str(template.get('last album').value).strip(), re.IGNORECASE)
+                        #re1 = re.search(r"((?:\d\d?\/\d\d?\/\d\d\d+)|(?:\d\d?\d+\/\d\d?\/\d\d?)|(?:(?:(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d?,?\s*\d\d\d+))",str(template.get('last album').value).strip(),re.IGNORECASE)
+                        #re2 = re.search(r"((?:(?:\d\d+\s*)?(?:(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d\d+)|(\d\d+-\d\d-\d\d+))",str(template.get('last album').value).strip(),re.IGNORECASE)
+                        #template.replace("previous album","prev_title")
+                        template.get("last album").name = "prev_title"
+                        if not re1:
+                            if not re2:
+                                if not re3:
+                                    print("Didn't happen last album")
+                                    continue
+                        t = re.search(r"(\[\[(?:\d\d?\/\d\d?\/\d\d\d+)|(?:\d\d?\d+\/\d\d?\/\d\d?)|(?:(?:(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d?,?\s*\d\d\d+))",str(template.get('prev_title').value).strip(),re.IGNORECASE)
+                        t1 = re.search(r"(\[\[(?:(?:\d\d+\s*)?(?:(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d\d+)|(\d\d+-\d\d-\d\d+)|(\d\d\d+))",str(template.get('prev_title').value).strip(),re.IGNORECASE)
+                        if not t:
+                            template.get("prev_title").value = re.sub(r"((?:\d\d?\/\d\d?\/\d\d\d+)|(?:\d\d?\d+\/\d\d?\/\d\d?)|(?:(?:(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d?,?\s*\d\d\d+)|(\d\d+-\d\d-\d\d+))","",str(template.get('prev_title').value))
+                        if not t1:
+                            template.get("prev_title").value = re.sub(r"((?:(?:\d\d+\s*)?(?:(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d\d+)|(\d\d+-\d\d-\d\d+))|(\d\d\d+))","",str(template.get('prev_title').value))
+                        if re1:
+                            template.add("prev_year",re1.group(1))
+                            t = re.search(r"(\[\[(?:\d\d?\/\d\d?\/\d\d\d+)|(?:\d\d?\d+\/\d\d?\/\d\d?)|(?:(?:(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d?,?\s*\d\d\d+))",str(template.get('prev_title').value).strip(),re.IGNORECASE)
+                            t1 = re.search(r"(\[\[(?:(?:\d\d+\s*)?(?:(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d\d+)|(\d\d+-\d\d-\d\d+))",str(template.get('prev_title').value).strip(),re.IGNORECASE)
+                            if not t:
+                                template.get("prev_title").value = re.sub(r"((?:\d\d?\/\d\d?\/\d\d\d+)|(?:\d\d?\d+\/\d\d?\/\d\d?)|(?:(?:(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d?,?\s*\d\d\d+))","",str(template.get('prev_title').value))
+                            if not t1:
+                                template.get("prev_title").value = re.sub(r"((?:(?:\d\d+\s*)?(?:(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d\d+)|(\d\d+-\d\d-\d\d+))","",str(template.get('prev_title').value))
+
+                        if re2:
+                            template.add("prev_year",re2.group(1))
+
+                    if template.has("next album"):
+                        print("Has next album")
+                        re1 = datetempreg.search(str(template.get('next album').value).strip(),re.IGNORECASE)
+                        re2 = datetempreg2.search(str(template.get('next album').value).strip(),re.IGNORECASE)
+                        #re1 = re.search(r"((?:\d\d?\/\d\d?\/\d\d\d+)|(?:\d\d?\d+\/\d\d?\/\d\d?)|(?:(?:(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d?,?\s*\d\d\d+))",str(template.get('next album').value).strip(),re.IGNORECASE)
+                        #re2 = re.search(r"((?:(?:\d\d+\s*)?(?:(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d\d+)|(\d\d+-\d\d-\d\d+))",str(template.get('next album').value).strip(),re.IGNORECASE)
+                        #template.replace("next album","next_title")
+                        template.get("next album").name = "next_title"
+                        if not re1:
+                            if not re2:
+                                print("Didn't happen next album")
+                                continue
+                        if re1:
+                            template.add("next_year",re1.group(1))
+                        if re2:
+                            template.add("next_year",re2.group(1))
+
                 if template.has("released"):
                     #print("Y")
-                    #print(str(template.get('released').value).strip())
-                    if not re.match(r'\d\d\d+',str(template.get('released').value).strip()):
-                        print("Didn't happen")
+                    print(str(template.get('released').value).strip())
+                    if not re.search(r'\d\d\d+',str(template.get('released').value).strip()):
+                        print("Didn't happen released")
                         continue
                 # name = template.name
                 # template.name = "d" + temp
@@ -204,9 +288,9 @@ def single_run(title, utils, site,cat_to_avoid):
     if site is None:
         raise ValueError("Site cannot be empty!")
     avoid = []
-#    if cat_to_avoid is not None:
-#        for page in site.Categories[cat_to_avoid]:
-#            avoid.append(page.name)
+    if cat_to_avoid is not None:
+        for page in site.Categories[cat_to_avoid]:
+            avoid.append(page.name)
     print(title)
   #  print(avoid)
     if title in avoid:
@@ -251,7 +335,7 @@ def category_run(cat_name, utils, site, offset, limited_run, pages_to_run, cat_t
             continue
         print("Working with: " + page.name + " " + str(counter))
         if limited_run:
-            if counter < pages_to_run:
+            if counter <= pages_to_run:
                 counter += 1
                 text = page.text()
                 try:
@@ -264,7 +348,7 @@ def category_run(cat_name, utils, site, offset, limited_run, pages_to_run, cat_t
 
 def main():
     dry_run = False
-    pages_to_run = 10
+    pages_to_run = 5
     offset = 0
     category = "Music infoboxes with deprecated parameters"  # "Pages using div col with deprecated parameters"
     category_to_avoid = "Music infoboxes with Module:String errors"
@@ -295,10 +379,12 @@ def main():
         raise ValueError("Login failed.")
     utils = [config, site, dry_run]
     try:
-     #   category_run(category,utils,site,offset,limited_run,pages_to_run,category_to_avoid)
-        single_run("User:DeprecatedFixerBot/sandbox/music infoboxes", utils, site, category_to_avoid)
-    except ValueError as e:
+        category_run(category,utils,site,offset,limited_run,pages_to_run,category_to_avoid)
+    #    single_run("Brazil (EP)", utils, site, category_to_avoid)
 
+        #single_run("De Viaje", utils, site, category_to_avoid)
+    #    single_run("User:DeprecatedFixerBot/sandbox/music infoboxes", utils, site, category_to_avoid)
+    except ValueError as e:
         print("\n\n" + str(e))
 
 
