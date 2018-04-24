@@ -345,8 +345,9 @@ def category_run(cat_name, utils, site, offset, limited_run, pages_to_run, cat_t
                 try:
                     save_edit(page, utils, text)  # config, api, site, text, dry_run)#, config)
                 except ValueError as err:
-                    print(err)
-                    return
+                    #print(err)
+                    raise
+                    #return
             else:
                 return  # run out of pages in limited run
 
