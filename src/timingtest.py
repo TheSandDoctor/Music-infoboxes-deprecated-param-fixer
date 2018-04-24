@@ -4,7 +4,7 @@ import example
 
 def main():
     site = mwclient.Site(('https', 'en.wikipedia.org'), '/w/')
-    site.login('DeprecatedFixerBot', 'PvDF5hBf;;Ibq#lb)06BYnz}LB{|l!rj')
+    site.login('DeprecatedFixerBot', 'PASSWORD')
     #pages_to_avoid = []
     #print(timeit.timeit('addme(site)',setup="import mwclient site = mwclient.Site(('https', 'en.wikipedia.org'), '/w/')",number=10))
     #p = site.Pages['Rolling Stones']
@@ -33,7 +33,7 @@ if __name__=='__main__':
     #main()
 def addme():
     site = mwclient.Site(('https', 'en.wikipedia.org'), '/w/')
-    site.login('DeprecatedFixerBot', 'PvDF5hBf;;Ibq#lb)06BYnz}LB{|l!rj')
+    site.login('DeprecatedFixerBot', 'PASSWORD')
 #    pages_to_avoid = []
     #p = site.Pages['Rolling Stones']
     for page in site.Categories['Music infoboxes with Module:String errors']:
