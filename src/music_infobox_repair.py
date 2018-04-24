@@ -54,7 +54,7 @@ def save_edit(page, utils, text):
                     break  # can edit
             print("\n\nPage editing blocked as template preventing edit is present.\n\n")
             return
-    if not call_home(site):  # config):
+    if not music_infobox.call_home(site,"DeprecatedFixerBot"):  # config):
         raise ValueError("Kill switch on-wiki is false. Terminating program.")
     time = 0
     edit_summary = """Removed deprecated parameter(s) from [[Template:Infobox album]]/[[Template:Extra chronology]]/[[Template:Extra album cover]]/[[Template:Extra track listing]] using [[User:""" + config.get(
