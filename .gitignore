@@ -2,4 +2,5 @@ Makefile
 *.so
 *.cmake
 credentials.txt
-./CMakeFiles
+CMakeFiles/
+CMakeCache.txt
