@@ -240,7 +240,7 @@ bool revert(string page_name,py::object site) {
     py::print(second_last["user"]);
     if(string(py::str(last_item["user"])) == BOT_USER && string(py::str(second_last["user"])) != BOT_USER) {
         py::print(last_item["revid"]);
-        py::str old = page.attr("text");
+        py::str old = py::str(page.attr("text"));
         py::print(old);
         page.attr("text") = page.attr("getOldVersion")(second_last["revid"]);
         py::print(page.attr("text"));

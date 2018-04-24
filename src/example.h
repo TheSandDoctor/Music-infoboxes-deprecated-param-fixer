@@ -19,8 +19,8 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
  */
-#include "pybind/include/pybind11/pybind11.h"
-#include "pybind/include/pybind11/embed.h"
+#include <pybind11/pybind11.h>
+#include <pybind11/embed.h>
 #include "utilities.h"
 
 #include <iostream>
