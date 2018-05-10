@@ -184,7 +184,7 @@ def process_page(text):
                 if type_of_template == "extra chronology":
                     wikilink1 = re.compile(r"(\[\[(?:(?:\d\d?\/\d\d?\/\d\d\d+)|(?:\d\d?\d+\/\d\d?\/\d\d?)|(?:(?:(?:\d\d+\s*)?(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d?,?\s*\d\d\d+)|(\d\d+-\d\d-\d\d+)))")
                     datetempreg = re.compile(r"((?:\d\d?\/\d\d?\/\d\d\d+)|(?:\d\d?\d+\/\d\d?\/\d\d?)|(?:(?:(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d?,?\s*\d\d\d+))")
-                    datetempreg2 = re.compile(r"((?:(?:\d\d+\s*)?(?:(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d\d+)|(\d\d+-\d\d-\d\d+))")
+                    datetempreg2 = re.compile(r"((?:(?:\d\d+\s*)?(?:(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d\d+)|(\d\d+-\d\d-\d\d+))|(\d\d\d\d–\d\d\d\d)|(\d\d\d\d-\d\d\d\d)")
                     datetempreg3 = re.compile(r"\d\d\d+")
                     if template.has("this album"):
                         #wikilink1 = re.compile(r"(\[\[(?:(?:\d\d?\/\d\d?\/\d\d\d+)|(?:\d\d?\d+\/\d\d?\/\d\d?)|(?:(?:(?:\d\d+\s*)?(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d?,?\s*\d\d\d+)|(\d\d+-\d\d-\d\d+)))")
@@ -205,7 +205,7 @@ def process_page(text):
                         #t1 = re.search(r"(\[\[(?:(?:\d\d+\s*)?(?:(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d\d+)|(\d\d+-\d\d-\d\d+))",str(template.get('title').value).strip(),re.IGNORECASE)
                         if not t:
                             print("Not t")
-                            template.get("title").value = re.sub(r"((?:\d\d?\/\d\d?\/\d\d\d+)|(?:\d\d?\d+\/\d\d?\/\d\d?)|(?:(?:(?:\d\d+\s*)?(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d?,?\s*\d\d\d+)|(\d\d+-\d\d-\d\d+))","",str(template.get('title').value))
+                            template.get("title").value = re.sub(r"((?:\d\d?\/\d\d?\/\d\d\d+)|(?:\d\d?\d+\/\d\d?\/\d\d?)|(?:(?:(?:\d\d+\s*)?(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d?,?\s*\d\d\d+)|(\d\d+-\d\d-\d\d+))|(?:\d\d\d\d–\d\d\d\d)|(?:\d\d\d\d-\d\d\d\d)","",str(template.get('title').value))
                     #    if not t1:
                     #        print("Not t1")
                     #        template.get("title").value = re.sub(r"((?:(?:\d\d+\s*)?(?:(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d\d+)|(\d\d+-\d\d-\d\d+))","",str(template.get('title').value))
@@ -289,7 +289,7 @@ def single_run(title, utils, site,cat_to_avoid):
         raise ValueError("Site cannot be empty!")
     avoid = []
     if cat_to_avoid is not None:
-        avoid = music_infobox.gen_cat_to_avoid(site,cat_to_avoid)
+        avoid = music_infobox.gen_cat(site,cat_to_avoid)
         #for page in site.Categories[cat_to_avoid]:
         #    avoid.append(page.name)
     print(title)
@@ -328,7 +328,7 @@ def category_run(cat_name, utils, site, offset, limited_run, pages_to_run, cat_t
     pages_to_avoid = []
     #for page in site.Categories[cat_to_avoid]:
     #    pages_to_avoid.append(page.name)
-    pages_to_avoid = music_infobox.gen_cat_to_avoid(site,cat_to_avoid)
+    pages_to_avoid = music_infobox.gen_cat(site,cat_to_avoid)
     for page in site.Categories[cat_name]:
         if music_infobox.inlist(page.name,pages_to_avoid):
         #if page.name in pages_to_avoid:
