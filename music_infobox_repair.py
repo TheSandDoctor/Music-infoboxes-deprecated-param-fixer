@@ -339,15 +339,15 @@ def category_run(cat_name, utils, site, offset, limited_run, pages_to_run, cat_t
             offset -= 1
             print("Skipped due to offset config")
             continue
-        print("Working with: " + page.name + " " + str(counter))
         if limited_run:
             if counter <= pages_to_run:
+                print("Working with: " + page.name + " " + str(counter))
                 counter += 1
                 text = page.text()
                 try:
                     save_edit(page, utils, text)  # config, api, site, text, dry_run)#, config)
-                        if music_infobox.leftMess(site,page.page_title):
-                            print("A mess was left")
+                    if music_infobox.leftMess(site,page.page_title):
+                        print("A mess was left")
                 except ValueError as err:
                     #print(err)
                     raise
