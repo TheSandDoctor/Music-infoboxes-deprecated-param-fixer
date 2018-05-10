@@ -29,8 +29,8 @@
 #include <stdio.h>
 #include <sys/types.h>
 
-#define CAT_MODULE_STRING_ERRORS "[[Category:Music infoboxes with Module:String errors{{!}}"
-#define BOT_USER "DeprecatedFixerBot"
+#define CAT_MODULE_STRING_ERRORS "[[Category:Music infoboxes with Module:String errors"
+#define BOT_USER "DeprecatedFixerBot"   // self
 
 /**
  * See example.cpp for comments.

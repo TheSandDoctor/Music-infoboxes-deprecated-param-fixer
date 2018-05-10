@@ -214,7 +214,9 @@ bool leftMess(py::object site, string page_name) {
         cout << "in match\n";
         // revert
         if(revert(page_name,site)) {
+            cout << "Reverted self. Saved to text file.\n";
             //cout << "revert was true";
+           // py::object pyonlymethods = py::module::import("io").attr("open");
             py::object pyonlymethods = py::module::import("pyonlymethods");
             pyonlymethods.attr("cust_open")("./errors/","reverted",".txt","a+",string("\n") + string("#[[")+ page_name + string("]]") + string("\n"));
             return true;
@@ -252,7 +254,7 @@ bool revert(string page_name,py::object site) {
         py::print(old);
         page.attr("text") = page.attr("getOldVersion")(second_last["revid"]);
         py::print(page.attr("text"));
-        page2.attr("save")(page.attr("text"),"Quick editing test",true,true);
+        page2.attr("save")(page.attr("text"),"Something was wrong with the previous edit in relation to [[Wikipedia:Bots/Requests for approval/DeprecatedFixerBot 3|task 3]]: . The page name was recorded locally for analysis.",true,true);
         /*try{
             
         }catch(...) {
