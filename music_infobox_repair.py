@@ -59,7 +59,7 @@ def save_edit(page, utils, text):
     time = 0
     edit_summary = """Removed deprecated parameter(s) from [[Template:Infobox album]]/[[Template:Extra chronology]]/[[Template:Extra album cover]]/[[Template:Extra track listing]] using [[User:""" + config.get(
         'enwikidep', 'username') + "| " + config.get('enwikidep',
-                                                     'username') + """]]. Questions? [[User talk:TheSandDoctor|msg TSD!]] (please mention that this is task #3! [[Wikipedia:Bots/Requests for approval/DeprecatedFixerBot 3|BRFA in-progress]])"""
+                                                     'username') + """]]. Questions? [[User talk:TheSandDoctor|msg TSD!]] (please mention that this is task #3! [[Wikipedia:Bots/Requests for approval/DeprecatedFixerBot 3|approved BRFA]])"""
     while True:
         # text = page.edit()
         if time == 1:
