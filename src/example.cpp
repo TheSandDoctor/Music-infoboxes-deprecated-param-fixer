@@ -86,14 +86,15 @@ void sortArray(char *string[], const int size)
 bool pageInList(std::string page_name,py::list list) {
    // sortArray(py::str(list))
     for(auto item:list) {
-        if(page_name.compare(py::str(item)) == 0){//if(page_name.find(py::str(item)) != string::npos) {
+        //cout << string(py::str(item));
+        if(page_name.compare(py::str(item.attr("name"))) == 0){//if(page_name.find(py::str(item)) != string::npos) {
             //cout << string(py::str(item));
             return true;
         }
     }
     return false;
 }
-py::list gen_cat_to_avoid(py::object site,py::str cat) {
+py::list gen_cat(py::object site,py::str cat) {
     py::list list; //= new py::list();
     for(auto item : site.attr("Categories").attr("__getitem__")(cat)) {
         list.append(item);
@@ -206,11 +207,12 @@ bool getContentChanged(){
         }
     }
 }*/
-bool leftMess(py::object site, string page_name) {
-    
+bool leftMess(py::object site, string page_name, py::list error_cat_list) {
+    bool page_present = pageInList(page_name,error_cat_list);
     py::object page = site.attr("Pages").attr("__getitem__")(page_name);
   //  cout << "In mess";
-    if(string(py::str( page.attr("text")() )).find(CAT_MODULE_STRING_ERRORS) != string::npos) {
+    if((string(py::str( page.attr("text")() )).find(CAT_MODULE_STRING_ERRORS) != string::npos)
+       || page_present) {
         cout << "in match\n";
         // revert
         if(revert(page_name,site)) {
@@ -233,6 +235,7 @@ bool leftMess(py::object site, string page_name) {
  */
 bool revert(string page_name,py::object site) {
     py::print(page_name);
+    py::print("In revert");
     py::object pywiki = py::module::import("pywikibot");
     py::object mwclient = py::module::import("mwclient");
     py::object page2 = site.attr("Pages").attr("__getitem__")(page_name);
@@ -289,7 +292,7 @@ PYBIND11_MODULE(music_infobox, m) {
     m.def("revert",&revert);
     m.def("leftMess",&leftMess);
     //m.def("l",&gen_cat_to_avoid);
-    m.def("gen_cat_to_avoid",&gen_cat_to_avoid);
+    m.def("gen_cat",&gen_cat);
     //m.def("makedir",&Helpers::makeDir);
     //m.def("create",&Helpers::createWriteFile2);
    // m.def("validf",&Helpers::get_valid_filename);
