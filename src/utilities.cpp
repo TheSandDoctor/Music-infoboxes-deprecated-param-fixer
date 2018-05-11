@@ -14,7 +14,7 @@ void print_dict(pybind11::dict dict){
  */
 bool call_home(pybind11::object site, std::string user_name){
     //py::print(py::str(site));
-    pybind11::object page = site.attr("Pages").attr("__getitem__")("User:" + user_name + "/status2");
+    pybind11::object page = site.attr("Pages").attr("__getitem__")("User:" + user_name + "/status");
     pybind11::object json = pybind11::module::import("json");
     auto text = page.attr("text")();
     auto data = json.attr("loads")(text).attr("__getitem__")("run").attr("__getitem__")("music");
