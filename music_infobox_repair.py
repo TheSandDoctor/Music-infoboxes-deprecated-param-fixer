@@ -113,8 +113,9 @@ def save_edit(page, utils, text):
                 # TODO: Enable
                 page.save(text, summary=edit_summary, bot=True, minor=True)
                 print("Saved page")
-                if music_infobox.leftMess(site,page.page_title):
-                    print("Introduced error, self reverted")
+                #   li = music_infobox.gen_cat(site,"Music infoboxes with Module:String errors")
+                #  if music_infobox.leftMess(site,page.page_title,string_errors_cat):
+                #     print("Introduced error, self reverted")
         except mwclient.ProtectedPageError:
             print('Could not edit ' + page.page_title + ' due to protection')
         except mwclient.EditError:
@@ -181,10 +182,10 @@ def process_page(text):
                 #parat = str(t.params).lower()
                 #t = mwparserfromhell.nodes.template.Template(str(t),parat)
                 #print(t.params)
-                if type_of_template == "extra chronology":
+                if type_of_template == "extra chronology":# or type_of_template == "album infobox" or type_of_template == "infobox album":
                     wikilink1 = re.compile(r"(\[\[(?:(?:\d\d?\/\d\d?\/\d\d\d+)|(?:\d\d?\d+\/\d\d?\/\d\d?)|(?:(?:(?:\d\d+\s*)?(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d?,?\s*\d\d\d+)|(\d\d+-\d\d-\d\d+)))")
                     datetempreg = re.compile(r"((?:\d\d?\/\d\d?\/\d\d\d+)|(?:\d\d?\d+\/\d\d?\/\d\d?)|(?:(?:(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d?,?\s*\d\d\d+))")
-                    datetempreg2 = re.compile(r"((?:(?:\d\d+\s*)?(?:(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d\d+)|(\d\d+-\d\d-\d\d+))|(\d\d\d\d–\d\d\d\d)|(\d\d\d\d-\d\d\d\d)")
+                    datetempreg2 = re.compile(r"((?:(?:\d\d+\s*)?(?:(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))(?:\s*\d\d\d+))|(?:\d\d+-\d\d-\d\d+)|(?:\d\d\d\d–\d\d\d\d)|(?:\d\d\d\d-\d\d\d\d)|(?:\d{4}))")
                     datetempreg3 = re.compile(r"\d\d\d+")
                     if template.has("this album"):
                         #wikilink1 = re.compile(r"(\[\[(?:(?:\d\d?\/\d\d?\/\d\d\d+)|(?:\d\d?\d+\/\d\d?\/\d\d?)|(?:(?:(?:\d\d+\s*)?(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d?,?\s*\d\d\d+)|(\d\d+-\d\d-\d\d+)))")
@@ -280,7 +281,7 @@ def process_page(text):
     return [content_changed, str(code)]  # get back text to save
 
 
-def single_run(title, utils, site,cat_to_avoid):
+def single_run(title, utils, site,cat_to_avoid, string_errors_cat):
     if title is None or title is "":
         raise ValueError("Category name cannot be empty!")
     if utils is None:
@@ -294,7 +295,7 @@ def single_run(title, utils, site,cat_to_avoid):
         #    avoid.append(page.name)
     print(title)
   #  print(avoid)
-    if music_infobox.inlist(title,pages_to_avoid):
+    if music_infobox.inlist(title,avoid):
     #if title in avoid:
         print("Page should be avoided!")
         exit(0)
@@ -304,13 +305,13 @@ def single_run(title, utils, site,cat_to_avoid):
     try:
         # utils = [config,site,dry_run]
         save_edit(page, utils, text)  # config, api, site, text, dry_run)#, config)
-        if music_infobox.leftMess(site,page.page_title):
-            print("A mess was left")
+        if music_infobox.leftMess(site,page.page_title,music_infobox.gen_cat(site,string_errors_cat)):
+            print("Introduced error, self reverted.")
     except ValueError as err:
         print(err)
 
 
-def category_run(cat_name, utils, site, offset, limited_run, pages_to_run, cat_to_avoid):
+def category_run(cat_name, utils, site, offset, limited_run, pages_to_run, cat_to_avoid, string_errors_cat):
     if cat_name is None or cat_name is "":
         raise ValueError("Category name cannot be empty!")
     if utils is None:
@@ -346,8 +347,8 @@ def category_run(cat_name, utils, site, offset, limited_run, pages_to_run, cat_t
                 text = page.text()
                 try:
                     save_edit(page, utils, text)  # config, api, site, text, dry_run)#, config)
-                    if music_infobox.leftMess(site,page.page_title):
-                        print("A mess was left")
+                    if music_infobox.leftMess(site,page.page_title,music_infobox.gen_cat(site,string_errors_cat)):
+                        print("Introduced error, self reverted.")
                 except ValueError as err:
                     #print(err)
                     raise
@@ -358,7 +359,7 @@ def category_run(cat_name, utils, site, offset, limited_run, pages_to_run, cat_t
 
 def main():
     dry_run = False
-    pages_to_run = 5
+    pages_to_run = 500
     offset = 0
     category = "Music infoboxes with deprecated parameters"  # "Pages using div col with deprecated parameters"
     category_to_avoid = "Music infoboxes with Module:String errors"
@@ -388,10 +389,11 @@ def main():
         print(e)
         raise ValueError("Login failed.")
     utils = [config, site, dry_run]
+    string_errors_cat = "Music infoboxes with Module:String errors"#music_infobox.gen_cat(site,"Music infoboxes with Module:String errors")
     try:
-        category_run(category,utils,site,offset,limited_run,pages_to_run,category_to_avoid)
+        category_run(category,utils,site,offset,limited_run,pages_to_run, category_to_avoid,string_errors_cat)
     #    single_run("Brazil (EP)", utils, site, category_to_avoid)
-
+    #single_run("User:DeprecatedFixerBot/sandbox/music infoboxes",utils,site,category_to_avoid,string_errors_cat)
         #single_run("De Viaje", utils, site, category_to_avoid)
     #    single_run("User:DeprecatedFixerBot/sandbox/music infoboxes", utils, site, category_to_avoid)
     except ValueError as e:

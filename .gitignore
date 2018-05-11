@@ -8,3 +8,4 @@ CMakeCache.txt
 .DS_Store
 pi.txt
 result.txt
+tests/
