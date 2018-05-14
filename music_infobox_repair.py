@@ -391,11 +391,11 @@ def main():
     utils = [config, site, dry_run]
     string_errors_cat = "Music infoboxes with Module:String errors"#music_infobox.gen_cat(site,"Music infoboxes with Module:String errors")
     try:
-#category_run(category,utils,site,offset,limited_run,pages_to_run, category_to_avoid,string_errors_cat)
+        category_run(category,utils,site,offset,limited_run,pages_to_run, category_to_avoid,string_errors_cat)
     #    single_run("Brazil (EP)", utils, site, category_to_avoid)
     #single_run("User:DeprecatedFixerBot/sandbox/music infoboxes",utils,site,category_to_avoid,string_errors_cat)
         #single_run("De Viaje", utils, site, category_to_avoid)
-        single_run("User:DeprecatedFixerBot/sandbox/music infoboxes", utils, site, category_to_avoid, string_errors_cat)
+#single_run("User:DeprecatedFixerBot/sandbox/music infoboxes", utils, site, category_to_avoid, string_errors_cat)
     except ValueError as e:
         print("\n\n" + str(e))
 
