@@ -57,9 +57,9 @@ def save_edit(page, utils, text):
     if not music_infobox.call_home(site,"DeprecatedFixerBot"):  # config):
         raise ValueError("Kill switch on-wiki is false. Terminating program.")
     time = 0
-    edit_summary = """Removed deprecated parameter(s) from [[Template:Infobox album]]/[[Template:Extra chronology]]/[[Template:Extra album cover]]/[[Template:Extra track listing]] using [[User:""" + config.get(
+    edit_summary = """Resolved deprecated parameter(s) from [[Template:Infobox album]]/[[Template:Extra chronology]]/[[Template:Extra album cover]]/[[Template:Extra track listing]] using [[User:""" + config.get(
         'enwikidep', 'username') + "| " + config.get('enwikidep',
-                                                     'username') + """]]. Questions? [[User talk:TheSandDoctor|msg TSD!]] (please mention that this is task #3! [[Wikipedia:Bots/Requests for approval/DeprecatedFixerBot 3|approved BRFA]])"""
+                                                     'username') + """]]. Questions? [[User talk:TheSandDoctor|msg TSD!]] (please mention that this is task #3! [[Wikipedia:Bots/Requests for approval/DeprecatedFixerBot 3|approved BRFA]]); day #3 in ramp-up"""
     while True:
         # text = page.edit()
         if time == 1:
