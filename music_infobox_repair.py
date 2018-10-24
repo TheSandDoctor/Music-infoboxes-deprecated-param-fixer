@@ -223,7 +223,7 @@ def process_page(text):
                         #re1 = re.search(r"((?:\d\d?\/\d\d?\/\d\d\d+)|(?:\d\d?\d+\/\d\d?\/\d\d?)|(?:(?:(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d?,?\s*\d\d\d+))",str(template.get('last album').value).strip(),re.IGNORECASE)
                         #re2 = re.search(r"((?:(?:\d\d+\s*)?(?:(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d\d+)|(\d\d+-\d\d-\d\d+))",str(template.get('last album').value).strip(),re.IGNORECASE)
                         #template.replace("previous album","prev_title")
-                        template.get("last album").name = "prev_title"
+                        template.get("last album").name = "prev title"
                         if not re1:
                             if not re2:
                                 if not re3:
@@ -232,20 +232,20 @@ def process_page(text):
                         t = re.search(r"(\[\[(?:\d\d?\/\d\d?\/\d\d\d+)|(?:\d\d?\d+\/\d\d?\/\d\d?)|(?:(?:(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d?,?\s*\d\d\d+))",str(template.get('prev_title').value).strip(),re.IGNORECASE)
                         t1 = re.search(r"(\[\[(?:(?:\d\d+\s*)?(?:(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d\d+)|(\d\d+-\d\d-\d\d+)|(\d\d\d+))",str(template.get('prev_title').value).strip(),re.IGNORECASE)
                         if not t:
-                            template.get("prev_title").value = re.sub(r"((?:\d\d?\/\d\d?\/\d\d\d+)|(?:\d\d?\d+\/\d\d?\/\d\d?)|(?:(?:(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d?,?\s*\d\d\d+)|(\d\d+-\d\d-\d\d+))","",str(template.get('prev_title').value))
+                            template.get("prev title").value = re.sub(r"((?:\d\d?\/\d\d?\/\d\d\d+)|(?:\d\d?\d+\/\d\d?\/\d\d?)|(?:(?:(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d?,?\s*\d\d\d+)|(\d\d+-\d\d-\d\d+))","",str(template.get('prev_title').value))
                         if not t1:
-                            template.get("prev_title").value = re.sub(r"((?:(?:\d\d+\s*)?(?:(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d\d+)|(\d\d+-\d\d-\d\d+))|(\d\d\d+))","",str(template.get('prev_title').value))
+                            template.get("prev title").value = re.sub(r"((?:(?:\d\d+\s*)?(?:(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d\d+)|(\d\d+-\d\d-\d\d+))|(\d\d\d+))","",str(template.get('prev_title').value))
                         if re1:
-                            template.add("prev_year",re1.group(1))
+                            template.add("prev year",re1.group(1))
                             t = re.search(r"(\[\[(?:\d\d?\/\d\d?\/\d\d\d+)|(?:\d\d?\d+\/\d\d?\/\d\d?)|(?:(?:(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d?,?\s*\d\d\d+))",str(template.get('prev_title').value).strip(),re.IGNORECASE)
                             t1 = re.search(r"(\[\[(?:(?:\d\d+\s*)?(?:(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d\d+)|(\d\d+-\d\d-\d\d+))",str(template.get('prev_title').value).strip(),re.IGNORECASE)
                             if not t:
-                                template.get("prev_title").value = re.sub(r"((?:\d\d?\/\d\d?\/\d\d\d+)|(?:\d\d?\d+\/\d\d?\/\d\d?)|(?:(?:(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d?,?\s*\d\d\d+))","",str(template.get('prev_title').value))
+                                template.get("prev title").value = re.sub(r"((?:\d\d?\/\d\d?\/\d\d\d+)|(?:\d\d?\d+\/\d\d?\/\d\d?)|(?:(?:(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d?,?\s*\d\d\d+))","",str(template.get('prev_title').value))
                             if not t1:
-                                template.get("prev_title").value = re.sub(r"((?:(?:\d\d+\s*)?(?:(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d\d+)|(\d\d+-\d\d-\d\d+))","",str(template.get('prev_title').value))
+                                template.get("prev title").value = re.sub(r"((?:(?:\d\d+\s*)?(?:(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d\d+)|(\d\d+-\d\d-\d\d+))","",str(template.get('prev_title').value))
 
                         if re2:
-                            template.add("prev_year",re2.group(1))
+                            template.add("prev year",re2.group(1))
 
                     if template.has("next album"):
                         print("Has next album")
@@ -254,15 +254,15 @@ def process_page(text):
                         #re1 = re.search(r"((?:\d\d?\/\d\d?\/\d\d\d+)|(?:\d\d?\d+\/\d\d?\/\d\d?)|(?:(?:(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d?,?\s*\d\d\d+))",str(template.get('next album').value).strip(),re.IGNORECASE)
                         #re2 = re.search(r"((?:(?:\d\d+\s*)?(?:(?:Jan|January|Feb|February|March|Mar|Apr|April|May|June|July|August|Aug|Sept|September|Oct|October|Nov|November|Dec|December))\s*\d\d\d+)|(\d\d+-\d\d-\d\d+))",str(template.get('next album').value).strip(),re.IGNORECASE)
                         #template.replace("next album","next_title")
-                        template.get("next album").name = "next_title"
+                        template.get("next album").name = "next title"
                         if not re1:
                             if not re2:
                                 print("Didn't happen next album")
                                 continue
                         if re1:
-                            template.add("next_year",re1.group(1))
+                            template.add("next year",re1.group(1))
                         if re2:
-                            template.add("next_year",re2.group(1))
+                            template.add("next year",re2.group(1))
 
                 if template.has("released"):
                     #print("Y")
