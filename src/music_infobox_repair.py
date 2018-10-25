@@ -117,6 +117,7 @@ def save_edit(page, utils, text):
                     print("Introduced error, self reverted")
         except mwclient.ProtectedPageError:
             print('Could not edit ' + page.page_title + ' due to protection')
+            continue
         except mwclient.EditError:
             print("Error")
             time = 1
