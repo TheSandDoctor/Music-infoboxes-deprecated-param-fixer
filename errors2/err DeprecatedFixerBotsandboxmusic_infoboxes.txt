@@ -1,0 +1,24 @@
+Error present: prev_title
+
+
+
+
+{{Infobox album | <!-- See Wikipedia:WikiProject_Albums -->
+| Name        = 2003-03-29 George M. Holmes Convention Center, Appalachian State University, Boone, NC
+| Type        = Live album
+| Artist      = [[Dave Matthews and Tim Reynolds]]
+| Cover       = DMDD45.jpg
+| Released    = September 22, 2009
+| Recorded    = March 29, 2003, [[George M. Holmes Convocation Center]], [[Appalachian State University]], [[Boone, North Carolina|Boone]], [[North Carolina|NC]]
+| Genre       = [[Rock music|Rock]]
+| Length      = 
+| Label       = 
+| Misc        =
+{{Extra chronology |
+| Artist      = ''DMBlive'' series
+| Type        = Live album
+| Last album  = DMB Warfield Theatre, San Francisco, CA 5/10/1995
+| This album  = 2003-03-29 George M. Holmes Convention Center, Appalachian State University, Boone, NC
+| Next album  = [[1993-01-27 The Flood Zone, Richmond, VA]]
+}}
+}}

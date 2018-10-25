@@ -359,7 +359,7 @@ def category_run(cat_name, utils, site, offset, limited_run, pages_to_run, cat_t
 
 def main():
     dry_run = False
-    pages_to_run = 1000
+    pages_to_run = 50000
     offset = 0
     category = "Music infoboxes with deprecated parameters"  # "Pages using div col with deprecated parameters"
     category_to_avoid = "Music infoboxes with Module:String errors"
